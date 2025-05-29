@@ -17,11 +17,12 @@ router.post('/add', async (req, res) => {
             });
         }
 
-        // Validate sum is positive
-        if (typeof sum !== 'number' || isNaN(sum) || sum <= 0) {
-            return res.status(400).json({
-                error: 'Invalid sum',
-                message: 'Sum must be a positive number'
+        // Check if user exists in the database
+        const userExists = await User.findById(userid);
+        if (!userExists) {
+            return res.status(404).json({
+                error: 'User not found',
+                message: 'The specified user does not exist in the database'
             });
         }
 
@@ -49,45 +50,21 @@ router.post('/add', async (req, res) => {
             });
         }
 
-        // Check if user exists first
-        let user = await User.findOne({ id: userid });
-
-        // If a user doesn't exist, create a new user
-        if (!user) {
-            user = new User({
-                id: userid,
-                first_name: "mosh",
-                last_name: "israeli"
-            });
-
-            try {
-                await user.save();
-                console.log(`Created new user with ID: ${userid}`);
-            } catch (userErr) {
-                return res.status(400).json({
-                    error: 'Failed to create user',
-                    message: userErr.message
-                });
-            }
-        }
-
         // Create a new cost object
-        const cost =  {
+        const cost = new Cost( {
             description: description.trim(),
             category,
             userid: parseInt(userid),
             sum: parseFloat(sum),
             date: new Date()
-        };
+        });
 
-        await Cost.create(cost);
-
+        await cost.save();
         res.status(201).json({
             message: 'Cost item added successfully',
             data: cost,
             userCreated: !user
         });
-
 
     } catch (err) {
         res.status(400).json({
