@@ -3,6 +3,8 @@ const router = express.Router();
 const User = require('../models/user');
 const Cost = require('../models/cost');
 
+
+
 // Add Cost endpoint
 router.post('/add', async (req, res) => {
     try {
@@ -21,8 +23,8 @@ router.post('/add', async (req, res) => {
         const userExists = await User.findById(userid);
         if (!userExists) {
             return res.status(404).json({
-                error: 'User not found',
-                message: 'The specified user does not exist in the database'
+                error: 'User Not Found',
+                message: 'The Specified User Does Not Exist In The Database'
             });
         }
 
@@ -30,23 +32,23 @@ router.post('/add', async (req, res) => {
         const validCategories = ['food', 'health', 'housing', 'sport', 'education'];
         if (!validCategories.includes(category)) {
             return res.status(400).json({
-                error: 'Invalid category',
-                message: `Category must be one of: ${validCategories.join(', ')}`
+                error: 'Invalid Category',
+                message: `Category Must Be One Of: ${validCategories.join(', ')}`
             });
         }
 
         // Validate description
         if (!description || typeof description !== 'string' || description.trim().length === 0) {
             return res.status(400).json({
-                error: 'Invalid description',
-                message: 'Description cannot be empty'
+                error: 'Invalid Description',
+                message: 'Description Cannot Be Empty'
             });
         }
 
         if (description.length > 100) {
             return res.status(400).json({
-                error: 'Invalid description',
-                message: 'Description cannot exceed 100 characters'
+                error: 'Invalid Description',
+                message: 'Description Cannot Exceed 100 Characters'
             });
         }
 
@@ -61,14 +63,14 @@ router.post('/add', async (req, res) => {
 
         await cost.save();
         res.status(201).json({
-            message: 'Cost item added successfully',
+            message: 'Cost Item Added Successfully',
             data: cost,
             userCreated: !user
         });
 
     } catch (err) {
         res.status(400).json({
-            error: 'Failed to add cost item',
+            error: 'Failed To Add Cost Item',
             message: err.message
         });
     }
@@ -88,8 +90,8 @@ router.get('/report', async (req, res) => {
         const user = await User.findOne({ id: numericId });
         if (!user) {
             return res.status(404).json({
-                error: 'User not found',
-                message: `No user found with ID: ${id}`
+                error: 'User Not Found',
+                message: `No User Found With ID: ${id}`
             });
         }
 
@@ -99,15 +101,15 @@ router.get('/report', async (req, res) => {
         // Validate year and month
         if (yearNum < 2000 || yearNum > 2100) {
             return res.status(400).json({
-                error: 'Invalid year',
-                message: 'Year must be between 2000 and 2100'
+                error: 'Invalid Year',
+                message: 'Year Must Be Between 2000 And 2100'
             });
         }
 
         if (monthNum < 1 || monthNum > 12) {
             return res.status(400).json({
-                error: 'Invalid month',
-                message: 'Month must be between 1 and 12'
+                error: 'Invalid Month',
+                message: 'Month Must Be Between 1 And 12'
             });
         }
 
@@ -132,7 +134,7 @@ router.get('/report', async (req, res) => {
         }).lean(); // Use lean() for better performance
 
         // Log found costs for debugging
-        console.log('Found costs:', costs);
+        console.log('Found Costs:', costs);
 
         const categories = ['food', 'education', 'health', 'housing', 'sport'];
         const report = {
@@ -152,13 +154,15 @@ router.get('/report', async (req, res) => {
 
         res.json(report);
     } catch (err) {
-        console.error('Report generation error:', err);
+        console.error('Report Generation Error:', err);
         res.status(500).json({
-            error: 'Failed to generate report',
+            error: 'Failed To Generate Report',
             message: err.message
         });
     }
 });
+
+
 
 router.get('/users/:id', async (req, res) => {
     const id = Number(req.params.id);
@@ -166,8 +170,8 @@ router.get('/users/:id', async (req, res) => {
     // Validate user ID
     if (!Number.isInteger(id) || id <= 0) {
         return res.status(400).json({
-            error: 'Invalid user ID',
-            message: 'User ID must be a positive integer'
+            error: 'Invalid User ID',
+            message: 'User ID Must Be A Positive Integer'
         });
     }
 
@@ -175,8 +179,8 @@ router.get('/users/:id', async (req, res) => {
         const user = await User.findOne({ id });
         if (!user) {
             return res.status(404).json({
-                error: 'User not found',
-                message: `No user found with ID: ${id}`
+                error: 'User Not Found',
+                message: `No User Found With ID: ${id}`
             });
         }
 
@@ -186,7 +190,7 @@ router.get('/users/:id', async (req, res) => {
         ]);
 
         res.json({
-            message: 'User information retrieved successfully',
+            message: 'User Information Retrieved Successfully',
             data: {
                 id: user.id,
                 first_name: user.first_name,
@@ -196,11 +200,13 @@ router.get('/users/:id', async (req, res) => {
         });
     } catch (err) {
         res.status(400).json({
-            error: 'Failed to retrieve user information',
+            error: 'Failed To Retrieve User Information',
             message: err.message
         });
     }
 });
+
+
 
 router.get('/about', (req, res) => {
     const team = [
@@ -208,9 +214,10 @@ router.get('/about', (req, res) => {
         { first_name: "Nicole", last_name: "Melamed" }
     ];
     res.json({
-        message: 'Team information retrieved successfully',
+        message: 'Team Information Retrieved Successfully',
         data: team
     });
 });
+
 
 module.exports = router;
