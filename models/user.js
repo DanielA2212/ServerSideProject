@@ -18,10 +18,12 @@ const userSchema = new mongoose.Schema({
         trim: true
     },
     birthday: {
-        type: Date
+        type: Date,
+        required: true
     },
     marital_status: {
-        type: String
+        type: String,
+        required: true
     }
 });
 
