@@ -62,7 +62,7 @@ router.get('/report', async (req, res) => {
             });
         }
 
-        // Validate year and month
+        // Validate Year Is Integer
         if (!/^\d+$/.test(year)) {
             return res.status(400).json({
                 error: 'Invalid Year Format',
@@ -70,6 +70,7 @@ router.get('/report', async (req, res) => {
             });
         }
 
+        // Validate Month Is Integer
         if (!/^\d+$/.test(month)) {
             return res.status(400).json({
                 error: 'Invalid Month Format',
@@ -80,6 +81,7 @@ router.get('/report', async (req, res) => {
         const yearNum = parseInt(year);
         const monthNum = parseInt(month);
 
+        //Validate Month Between 1 And 12
         if (monthNum < 1 || monthNum > 12) {
             return res.status(400).json({
                 error: 'Invalid Month',

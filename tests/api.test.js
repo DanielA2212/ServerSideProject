@@ -16,10 +16,7 @@ beforeAll(async () => {
     if (!uri) {
         throw new Error('MONGODB_URI_TEST is not defined in environment variables');
     }
-    await mongoose.connect(uri, {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-    });
+    await mongoose.connect(uri);
 });
 
 afterAll(async () => {
