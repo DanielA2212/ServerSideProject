@@ -8,19 +8,11 @@ const Cost = require('../models/cost');
 // Add Cost endpoint
 router.post('/add', async (req, res) => {
     try {
-        // Validate input
+
         const { description, category, userid, sum, date } = req.body;
 
-        // Validate userid is positive
-        if (!Number.isInteger(Number(userid)) || Number(userid) <= 0) {
-            return res.status(400).json({
-                error: 'Invalid user ID',
-                message: 'User ID must be a positive integer'
-            });
-        }
-
         // Check if user exists in the database
-        const userExists = await User.findById(userid);
+        const userExists = await User.findOne({ id: userid });
         if (!userExists) {
             return res.status(404).json({
                 error: 'User Not Found',
@@ -28,33 +20,9 @@ router.post('/add', async (req, res) => {
             });
         }
 
-        // Validate category
-        const validCategories = ['food', 'health', 'housing', 'sport', 'education'];
-        if (!validCategories.includes(category)) {
-            return res.status(400).json({
-                error: 'Invalid Category',
-                message: `Category Must Be One Of: ${validCategories.join(', ')}`
-            });
-        }
-
-        // Validate description
-        if (!description || typeof description !== 'string' || description.trim().length === 0) {
-            return res.status(400).json({
-                error: 'Invalid Description',
-                message: 'Description Cannot Be Empty'
-            });
-        }
-
-        if (description.length > 100) {
-            return res.status(400).json({
-                error: 'Invalid Description',
-                message: 'Description Cannot Exceed 100 Characters'
-            });
-        }
-
         // Create a new cost object
         const cost = new Cost( {
-            description: description.trim(),
+            description,
             category,
             userid: parseInt(userid),
             sum: parseFloat(sum),
@@ -65,7 +33,6 @@ router.post('/add', async (req, res) => {
         res.status(201).json({
             message: 'Cost Item Added Successfully',
             data: cost,
-            userCreated: !user
         });
 
     } catch (err) {
@@ -95,16 +62,23 @@ router.get('/report', async (req, res) => {
             });
         }
 
-        const yearNum = parseInt(year);
-        const monthNum = parseInt(month);
-
         // Validate year and month
-        if (yearNum < 2000 || yearNum > 2100) {
+        if (!/^\d+$/.test(year)) {
             return res.status(400).json({
-                error: 'Invalid Year',
-                message: 'Year Must Be Between 2000 And 2100'
+                error: 'Invalid Year Format',
+                message: 'Year Must Contain Only Digits'
             });
         }
+
+        if (!/^\d+$/.test(month)) {
+            return res.status(400).json({
+                error: 'Invalid Month Format',
+                message: 'Month Must Contain Only Digits'
+            });
+        }
+
+        const yearNum = parseInt(year);
+        const monthNum = parseInt(month);
 
         if (monthNum < 1 || monthNum > 12) {
             return res.status(400).json({
@@ -166,14 +140,6 @@ router.get('/report', async (req, res) => {
 
 router.get('/users/:id', async (req, res) => {
     const id = Number(req.params.id);
-
-    // Validate user ID
-    if (!Number.isInteger(id) || id <= 0) {
-        return res.status(400).json({
-            error: 'Invalid User ID',
-            message: 'User ID Must Be A Positive Integer'
-        });
-    }
 
     try {
         const user = await User.findOne({ id });

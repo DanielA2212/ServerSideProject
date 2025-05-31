@@ -5,7 +5,6 @@ const costSchema = new mongoose.Schema({
         type: String,
         required: true,
         trim: true,
-        maxLength: 100
     },
     category: {
         type: String,

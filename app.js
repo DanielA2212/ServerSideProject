@@ -1,5 +1,5 @@
 const express = require('express');
-//const cors = require('cors');
+const cors = require('cors');
 const connectDB = require('./config/database');
 const apiRoutes = require('./routes/api');
 const createError = require('http-errors');
@@ -28,7 +28,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 connectDB();
 
 // Validation
-//app.use(cors());
+app.use(cors());
 
 // Routes
 app.use('/api', apiRoutes);

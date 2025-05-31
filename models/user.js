@@ -1,11 +1,11 @@
-// models/user.js
 const mongoose = require('mongoose');
 
 const userSchema = new mongoose.Schema({
     id: {
         type: Number,
         required: true,
-        unique: true
+        unique: true,
+        min: [1, 'User ID Must Be A Positive Integer']
     },
     first_name: {
         type: String,
