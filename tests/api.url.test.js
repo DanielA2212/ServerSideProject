@@ -1,10 +1,15 @@
 const request = require('supertest');
+const Cost = require("../models/cost");
 const mongoose = require('mongoose');
-const User = require('../models/user');
-const Cost = require('../models/cost');
 require('dotenv').config();
 
 const BASE_URL = 'http://localhost:3000';
+
+afterAll(async () => {
+    // Clean up costs collection after all tests
+    await Cost.deleteMany();
+    await mongoose.connection.close();
+});
 
 describe('API Routes Integration Tests (Using URL)', () => {
     describe('POST /api/add', () => {
@@ -24,10 +29,23 @@ describe('API Routes Integration Tests (Using URL)', () => {
 
             expect(res.statusCode).toBe(201);
             expect(res.body.message).toBe('Cost Item Added Successfully');
+
+            // Test each field individually
+            expect(res.body).toHaveProperty('data');
+            expect(res.body.data).toHaveProperty('description');
             expect(res.body.data.description).toBe(newCost.description);
+
+            expect(res.body.data).toHaveProperty('category');
             expect(res.body.data.category).toBe(newCost.category);
+
+            expect(res.body.data).toHaveProperty('userid');
             expect(res.body.data.userid).toBe(newCost.userid);
+
+            expect(res.body.data).toHaveProperty('sum');
             expect(res.body.data.sum).toBeCloseTo(newCost.sum);
+
+            expect(res.body.data).toHaveProperty('date');
+            expect(new Date(res.body.data.date).toISOString()).toBe(new Date(newCost.date).toISOString());
         });
 
         it('should return 404 if user not found', async () => {
@@ -53,18 +71,33 @@ describe('API Routes Integration Tests (Using URL)', () => {
                 .query({ id: 123123, year: '2024', month: '6' });
 
             expect(res.statusCode).toBe(200);
+
+            // Test each field individually
+            expect(res.body).toHaveProperty('userid');
             expect(res.body.userid).toBe(123123);
+
+            expect(res.body).toHaveProperty('year');
             expect(res.body.year).toBe(2024);
+
+            expect(res.body).toHaveProperty('month');
             expect(res.body.month).toBe(6);
-            expect(res.body.costs).toBeDefined();
+
+            expect(res.body).toHaveProperty('costs');
+            expect(Array.isArray(res.body.costs)).toBe(true);
 
             const foodCategory = res.body.costs.find(c => c.food);
             expect(foodCategory).toBeDefined();
             expect(Array.isArray(foodCategory.food)).toBe(true);
+
             foodCategory.food.forEach(item => {
                 expect(item).toHaveProperty('sum');
+                expect(typeof item.sum).toBe('number');
+
                 expect(item).toHaveProperty('description');
+                expect(typeof item.description).toBe('string');
+
                 expect(item).toHaveProperty('day');
+                expect(typeof item.day).toBe('number');
             });
         });
 
@@ -100,10 +133,21 @@ describe('API Routes Integration Tests (Using URL)', () => {
 
             expect(res.statusCode).toBe(200);
             expect(res.body.message).toBe('User Information Retrieved Successfully');
-            expect(res.body.data).toHaveProperty('id', 123123);
-            expect(res.body.data).toHaveProperty('first_name');
-            expect(res.body.data).toHaveProperty('last_name');
-            expect(res.body.data).toHaveProperty('total');
+
+            expect(res.body).toHaveProperty('data');
+            const data = res.body.data;
+
+            expect(data).toHaveProperty('id');
+            expect(data.id).toBe(123123);
+
+            expect(data).toHaveProperty('first_name');
+            expect(typeof data.first_name).toBe('string');
+
+            expect(data).toHaveProperty('last_name');
+            expect(typeof data.last_name).toBe('string');
+
+            expect(data).toHaveProperty('total');
+            expect(typeof data.total).toBe('number');
         });
 
         it('should return 404 if user not found', async () => {
@@ -120,10 +164,19 @@ describe('API Routes Integration Tests (Using URL)', () => {
 
             expect(res.statusCode).toBe(200);
             expect(res.body.message).toBe('Team Information Retrieved Successfully');
+
+            expect(res.body).toHaveProperty('data');
             expect(Array.isArray(res.body.data)).toBe(true);
             expect(res.body.data.length).toBeGreaterThanOrEqual(2);
-            expect(res.body.data[0]).toHaveProperty('first_name');
-            expect(res.body.data[0]).toHaveProperty('last_name');
+
+            res.body.data.forEach(member => {
+                expect(member).toHaveProperty('first_name');
+                expect(typeof member.first_name).toBe('string');
+
+                expect(member).toHaveProperty('last_name');
+                expect(typeof member.last_name).toBe('string');
+            });
         });
     });
 });
+

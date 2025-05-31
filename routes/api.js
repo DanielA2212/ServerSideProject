@@ -26,7 +26,7 @@ router.post('/add', async (req, res) => {
             category,
             userid: parseInt(userid),
             sum: parseFloat(sum),
-            date: new Date()
+            date
         });
 
         await cost.save();

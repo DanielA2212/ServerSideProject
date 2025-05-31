@@ -26,7 +26,7 @@ afterAll(async () => {
 
 beforeEach(async () => {
     // Clear collections before each test to have a clean slate
-    await User.deleteMany({});
+    await User.deleteMany({ id: { $ne: 123123 } });
     await Cost.deleteMany({});
 });
 
@@ -34,12 +34,6 @@ describe('API Routes Integration Tests (Real DB)', () => {
     describe('POST /api/add', () => {
         it('should add a cost item successfully', async () => {
             // First create a user
-            const user = new User({
-                id: 123123,
-                first_name: 'Mosh',
-                last_name: 'Israeli',
-            });
-            await user.save();
 
             const newCost = {
                 description: 'Lunch',
@@ -53,10 +47,23 @@ describe('API Routes Integration Tests (Real DB)', () => {
 
             expect(res.statusCode).toBe(201);
             expect(res.body.message).toBe('Cost Item Added Successfully');
+
+            // Test each field individually
+            expect(res.body.data).toHaveProperty('description');
             expect(res.body.data.description).toBe(newCost.description);
+
+            expect(res.body.data).toHaveProperty('category');
             expect(res.body.data.category).toBe(newCost.category);
+
+            expect(res.body.data).toHaveProperty('userid');
             expect(res.body.data.userid).toBe(newCost.userid);
+
+            expect(res.body.data).toHaveProperty('sum');
             expect(res.body.data.sum).toBeCloseTo(newCost.sum);
+
+            expect(res.body.data).toHaveProperty('date');
+            // Date might be returned as ISO string, so check it matches
+            expect(new Date(res.body.data.date).toISOString()).toBe(new Date(newCost.date).toISOString());
         });
 
         it('should return 404 if user not found', async () => {
@@ -97,13 +104,6 @@ describe('API Routes Integration Tests (Real DB)', () => {
 
     describe('GET /api/report', () => {
         it('should return report data successfully', async () => {
-            // Create user
-            const user = new User({
-                id: 123123,
-                first_name: 'Mosh',
-                last_name: 'Israeli',
-            });
-            await user.save();
 
             // Create costs
             const costs = [
@@ -118,19 +118,35 @@ describe('API Routes Integration Tests (Real DB)', () => {
                 .query({ id: 123123, year: '2024', month: '6' });
 
             expect(res.statusCode).toBe(200);
+
+            // Test each field individually
+            expect(res.body).toHaveProperty('userid');
             expect(res.body.userid).toBe(123123);
+
+            expect(res.body).toHaveProperty('year');
             expect(res.body.year).toBe(2024);
+
+            expect(res.body).toHaveProperty('month');
             expect(res.body.month).toBe(6);
-            expect(res.body.costs).toBeDefined();
+
+            expect(res.body).toHaveProperty('costs');
+            expect(Array.isArray(res.body.costs)).toBe(true);
 
             // Check food category contains 2 items
             const foodCategory = res.body.costs.find(c => c.food);
             expect(foodCategory).toBeDefined();
+            expect(Array.isArray(foodCategory.food)).toBe(true);
             expect(foodCategory.food.length).toBe(2);
+
             foodCategory.food.forEach(item => {
                 expect(item).toHaveProperty('sum');
+                expect(typeof item.sum).toBe('number');
+
                 expect(item).toHaveProperty('description');
+                expect(typeof item.description).toBe('string');
+
                 expect(item).toHaveProperty('day');
+                expect(typeof item.day).toBe('number');
             });
         });
 
@@ -185,8 +201,25 @@ describe('API Routes Integration Tests (Real DB)', () => {
 
             expect(res.statusCode).toBe(200);
             expect(res.body.message).toBe('User Information Retrieved Successfully');
-            expect(res.body.data.id).toBe(1);
-            expect(res.body.data.total).toBe(100);
+
+            // Test each field individually
+            expect(res.body).toHaveProperty('data');
+            const data = res.body.data;
+
+            expect(data).toHaveProperty('id');
+            expect(data.id).toBe(1);
+
+            expect(data).toHaveProperty('first_name');
+            expect(typeof data.first_name).toBe('string');
+            expect(data.first_name).toBe('John');
+
+            expect(data).toHaveProperty('last_name');
+            expect(typeof data.last_name).toBe('string');
+            expect(data.last_name).toBe('Doe');
+
+            expect(data).toHaveProperty('total');
+            expect(typeof data.total).toBe('number');
+            expect(data.total).toBe(100);
         });
 
         it('should return 404 if user not found', async () => {
@@ -217,10 +250,18 @@ describe('API Routes Integration Tests (Real DB)', () => {
 
             expect(res.statusCode).toBe(200);
             expect(res.body.message).toBe('Team Information Retrieved Successfully');
+
+            expect(res.body).toHaveProperty('data');
             expect(Array.isArray(res.body.data)).toBe(true);
             expect(res.body.data.length).toBe(2);
-            expect(res.body.data[0]).toHaveProperty('first_name');
-            expect(res.body.data[0]).toHaveProperty('last_name');
+
+            res.body.data.forEach(member => {
+                expect(member).toHaveProperty('first_name');
+                expect(typeof member.first_name).toBe('string');
+
+                expect(member).toHaveProperty('last_name');
+                expect(typeof member.last_name).toBe('string');
+            });
         });
     });
 });
