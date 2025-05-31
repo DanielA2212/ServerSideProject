@@ -144,7 +144,7 @@ describe('API Routes Integration Tests (Real DB)', () => {
             expect(res.body.message).toMatch(/sum/i);
         });
 
-        it('should set current date if date field is missing', async () => {
+        it('Should Set Current Date If Date Field Is Missing', async () => {
             await User.updateOne(
                 { id: 1 },
                 { id: 1, first_name: 'John', last_name: 'Doe' },
@@ -164,14 +164,14 @@ describe('API Routes Integration Tests (Real DB)', () => {
             expect(res.body.data).toHaveProperty('date');
 
             const returnedDate = new Date(res.body.data.date);
-            // The returned date should be between beforeRequest and afterRequest
+            // The Returned Date Should Be Between beforeRequest And afterRequest
             expect(returnedDate.getTime()).toBeGreaterThanOrEqual(beforeRequest.getTime());
             expect(returnedDate.getTime()).toBeLessThanOrEqual(afterRequest.getTime());
         });
 
         // Negative tests
 
-        it('should return 404 if user not found', async () => {
+        it('Should Return 404 If User Not Found', async () => {
             const res = await request(app).post('/api/add').send({
                 description: 'Lunch',
                 category: 'food',
@@ -182,7 +182,7 @@ describe('API Routes Integration Tests (Real DB)', () => {
             expect(res.statusCode).toBe(404);
         });
 
-        it('should return error "User Not Found" if user not found', async () => {
+        it('Should Return Error: " User Not Found" If User Not Found', async () => {
             const res = await request(app).post('/api/add').send({
                 description: 'Lunch',
                 category: 'food',
@@ -193,12 +193,12 @@ describe('API Routes Integration Tests (Real DB)', () => {
             expect(res.body.error).toBe('User Not Found');
         });
 
-        // Validation errors - test each required field missing except date (which is optional)
+        // Validation Errors Test Each Required Field Missing Except Date (Which Is Optional)
 
         const requiredFields = ['description', 'category', 'userid', 'sum'];
 
         requiredFields.forEach(field => {
-            it(`should return 400 if required field ${field} is missing`, async () => {
+            it(`Should Return 400 If Required Field ${field} Is Missing`, async () => {
                 // Ensure user exists for userid tests
                 if (field !== 'userid') {
                     await User.updateOne(
@@ -231,7 +231,7 @@ describe('API Routes Integration Tests (Real DB)', () => {
             });
         });
 
-        it('should return 400 if category is empty string', async () => {
+        it('Should Return 400 If Category Is Empty String', async () => {
             await User.updateOne(
                 { id: 1 },
                 { id: 1, first_name: 'John', last_name: 'Doe' },
@@ -249,7 +249,7 @@ describe('API Routes Integration Tests (Real DB)', () => {
             expect(res.body.message).toMatch(/category/i);
         });
 
-        it('should return 400 if description is empty string', async () => {
+        it('Should Return 400 If Description Is Empty String', async () => {
             await User.updateOne(
                 { id: 1 },
                 { id: 1, first_name: 'John', last_name: 'Doe' },
@@ -267,7 +267,7 @@ describe('API Routes Integration Tests (Real DB)', () => {
             expect(res.body.message).toMatch(/description/i);
         });
 
-        it('should return 400 if date is invalid format', async () => {
+        it('Should Return 400 If Date Is Invalid Format', async () => {
             await User.updateOne(
                 { id: 1 },
                 { id: 1, first_name: 'John', last_name: 'Doe' },
@@ -286,12 +286,9 @@ describe('API Routes Integration Tests (Real DB)', () => {
         });
     });
 
-    // The rest of the tests (GET /api/report, GET /api/users/:id, GET /api/about) remain unchanged
-    // because the sum and date behavior only affects POST /api/add
-
     describe('GET /api/report', () => {
         beforeEach(async () => {
-            // Ensure user 123123 exists for positive tests
+            // Ensure User 123123 Exists For Positive Tests
             await User.updateOne(
                 { id: 123123 },
                 { id: 123123, first_name: 'Test', last_name: 'User' },
@@ -299,7 +296,7 @@ describe('API Routes Integration Tests (Real DB)', () => {
             );
         });
 
-        it('should return 200 for valid report request', async () => {
+        it('Should Return 200 For Valid Report Request', async () => {
             const costs = [
                 { description: 'Breakfast', category: 'food', userid: 123123, sum: 10, date: new Date('2024-06-05') },
                 { description: 'Gym', category: 'sport', userid: 123123, sum: 20, date: new Date('2024-06-10') },
@@ -314,7 +311,7 @@ describe('API Routes Integration Tests (Real DB)', () => {
             expect(res.statusCode).toBe(200);
         });
 
-        it('should return userid field matching input', async () => {
+        it('Should Return Userid Field Matching Input', async () => {
             const costs = [
                 { description: 'Breakfast', category: 'food', userid: 123123, sum: 10, date: new Date('2024-06-05') },
             ];
@@ -328,7 +325,7 @@ describe('API Routes Integration Tests (Real DB)', () => {
             expect(res.body.userid).toBe(123123);
         });
 
-        it('should return year field as number matching input', async () => {
+        it('Should Return Year Field As Number Matching Input', async () => {
             const res = await request(app)
                 .get('/api/report')
                 .query({ id: 123123, year: '2024', month: '6' });
@@ -337,7 +334,7 @@ describe('API Routes Integration Tests (Real DB)', () => {
             expect(res.body.year).toBe(2024);
         });
 
-        it('should return month field as number matching input', async () => {
+        it('Should Return Month Field As Number Matching Input', async () => {
             const res = await request(app)
                 .get('/api/report')
                 .query({ id: 123123, year: '2024', month: '6' });
@@ -346,7 +343,7 @@ describe('API Routes Integration Tests (Real DB)', () => {
             expect(res.body.month).toBe(6);
         });
 
-        it('should return costs field as array', async () => {
+        it('Should Return Costs Field As Array', async () => {
             const res = await request(app)
                 .get('/api/report')
                 .query({ id: 123123, year: '2024', month: '6' });
@@ -355,7 +352,7 @@ describe('API Routes Integration Tests (Real DB)', () => {
             expect(Array.isArray(res.body.costs)).toBe(true);
         });
 
-        it('should return correct number of items in food category', async () => {
+        it('Should Return Correct Number Of Items In Food Category', async () => {
             const costs = [
                 { description: 'Breakfast', category: 'food', userid: 123123, sum: 10, date: new Date('2024-06-05') },
                 { description: 'Lunch', category: 'food', userid: 123123, sum: 15, date: new Date('2024-06-15') },
@@ -372,7 +369,7 @@ describe('API Routes Integration Tests (Real DB)', () => {
             expect(foodCategory.food.length).toBe(2);
         });
 
-        it('should have sum, description, and day fields in each cost item', async () => {
+        it('Should Have Sum, Description, And Day Fields In Each Cost Item', async () => {
             const costs = [
                 { description: 'Breakfast', category: 'food', userid: 123123, sum: 10, date: new Date('2024-06-05') },
             ];
@@ -397,9 +394,9 @@ describe('API Routes Integration Tests (Real DB)', () => {
             });
         });
 
-        // Negative tests
+        // Negative Tests
 
-        it('should return 404 if user not found', async () => {
+        it('Should Return 404 If User Not Found', async () => {
             const res = await request(app)
                 .get('/api/report')
                 .query({ id: 999999, year: '2024', month: '6' });
@@ -407,7 +404,7 @@ describe('API Routes Integration Tests (Real DB)', () => {
             expect(res.statusCode).toBe(404);
         });
 
-        it('should return error "User Not Found" if user not found', async () => {
+        it('Should Return Error " User Not Found" If User Not Found', async () => {
             const res = await request(app)
                 .get('/api/report')
                 .query({ id: 999999, year: '2024', month: '6' });
@@ -415,7 +412,7 @@ describe('API Routes Integration Tests (Real DB)', () => {
             expect(res.body.error).toBe('User Not Found');
         });
 
-        it('should return 400 for invalid year format (non-numeric)', async () => {
+        it('Should Return 400 For Invalid Year Format (Non Numeric)', async () => {
             await User.updateOne(
                 { id: 1 },
                 { id: 1, first_name: 'John', last_name: 'Doe' },
@@ -429,7 +426,7 @@ describe('API Routes Integration Tests (Real DB)', () => {
             expect(res.statusCode).toBe(400);
         });
 
-        it('should return error "Invalid Year Format" for invalid year', async () => {
+        it('Should Return Error: "Invalid Year Format" For Invalid Year', async () => {
             await User.updateOne(
                 { id: 1 },
                 { id: 1, first_name: 'John', last_name: 'Doe' },
@@ -443,7 +440,7 @@ describe('API Routes Integration Tests (Real DB)', () => {
             expect(res.body.error).toBe('Invalid Year Format');
         });
 
-        it('should return 400 for invalid month (non-numeric)', async () => {
+        it('Should Return 400 For Invalid Month (Non Numeric)', async () => {
             await User.updateOne(
                 { id: 1 },
                 { id: 1, first_name: 'John', last_name: 'Doe' },
@@ -457,7 +454,7 @@ describe('API Routes Integration Tests (Real DB)', () => {
             expect(res.statusCode).toBe(400);
         });
 
-        it('should return error "Invalid Month" for month out of range (0)', async () => {
+        it('Should Return Error: "Invalid Month" For Month Out Of Range (0)', async () => {
             await User.updateOne(
                 { id: 1 },
                 { id: 1, first_name: 'John', last_name: 'Doe' },
@@ -471,7 +468,7 @@ describe('API Routes Integration Tests (Real DB)', () => {
             expect(res.body.error).toBe('Invalid Month');
         });
 
-        it('should return error "Invalid Month" for month out of range (13)', async () => {
+        it('Should Return Error: "Invalid Month" For Month Out Of Range (13)', async () => {
             await User.updateOne(
                 { id: 1 },
                 { id: 1, first_name: 'John', last_name: 'Doe' },
@@ -485,7 +482,7 @@ describe('API Routes Integration Tests (Real DB)', () => {
             expect(res.body.error).toBe('Invalid Month');
         });
 
-        it('should return 400 if year is missing', async () => {
+        it('Should Return 400 If Year Is Missing', async () => {
             await User.updateOne(
                 { id: 1 },
                 { id: 1, first_name: 'John', last_name: 'Doe' },
@@ -499,7 +496,7 @@ describe('API Routes Integration Tests (Real DB)', () => {
             expect(res.statusCode).toBe(400);
         });
 
-        it('should return 400 if month is missing', async () => {
+        it('Should Return 400 If Month Is Missing', async () => {
             await User.updateOne(
                 { id: 1 },
                 { id: 1, first_name: 'John', last_name: 'Doe' },
@@ -513,7 +510,7 @@ describe('API Routes Integration Tests (Real DB)', () => {
             expect(res.statusCode).toBe(400);
         });
 
-        it('should return 400 if id is missing', async () => {
+        it('Should Return 400 If Id Is Missing', async () => {
             const res = await request(app)
                 .get('/api/report')
                 .query({ year: '2024', month: '6' });
@@ -529,7 +526,7 @@ describe('API Routes Integration Tests (Real DB)', () => {
             await Cost.deleteMany({});
         });
 
-        it('should return 200 for existing user', async () => {
+        it('Should Return 200 For Existing User', async () => {
             const user = new User({
                 id: 1,
                 first_name: 'John',
@@ -541,7 +538,7 @@ describe('API Routes Integration Tests (Real DB)', () => {
             expect(res.statusCode).toBe(200);
         });
 
-        it('should return message "User Information Retrieved Successfully"', async () => {
+        it('Should Return Message: "User Information Retrieved Successfully"', async () => {
             const user = new User({
                 id: 1,
                 first_name: 'John',
@@ -553,7 +550,7 @@ describe('API Routes Integration Tests (Real DB)', () => {
             expect(res.body.message).toBe('User Information Retrieved Successfully');
         });
 
-        it('should return user id matching param', async () => {
+        it('Should Return User Id Matching Param', async () => {
             const user = new User({
                 id: 1,
                 first_name: 'John',
@@ -566,7 +563,7 @@ describe('API Routes Integration Tests (Real DB)', () => {
             expect(res.body.data.id).toBe(1);
         });
 
-        it('should return first_name as string matching user', async () => {
+        it('Should Return First Name As String Matching User', async () => {
             const user = new User({
                 id: 1,
                 first_name: 'John',
@@ -580,7 +577,7 @@ describe('API Routes Integration Tests (Real DB)', () => {
             expect(res.body.data.first_name).toBe('John');
         });
 
-        it('should return last_name as string matching user', async () => {
+        it('Should Return Last Name As String Matching User', async () => {
             const user = new User({
                 id: 1,
                 first_name: 'John',
@@ -594,7 +591,7 @@ describe('API Routes Integration Tests (Real DB)', () => {
             expect(res.body.data.last_name).toBe('Doe');
         });
 
-        it('should return total cost as number summing all costs', async () => {
+        it('Should Return Total Cost As Number Summing All Costs', async () => {
             const user = new User({
                 id: 1,
                 first_name: 'John',
@@ -614,7 +611,7 @@ describe('API Routes Integration Tests (Real DB)', () => {
             expect(res.body.data.total).toBe(100);
         });
 
-        it('should return total 0 if user has no costs', async () => {
+        it('Should Return Total 0 If User Has No Costs', async () => {
             const user = new User({
                 id: 1,
                 first_name: 'John',
@@ -626,40 +623,40 @@ describe('API Routes Integration Tests (Real DB)', () => {
             expect(res.body.data.total).toBe(0);
         });
 
-        it('should return 404 if user not found', async () => {
+        it('Should Return 404 If User Not Found', async () => {
             const res = await request(app).get('/api/users/999999');
             expect(res.statusCode).toBe(404);
         });
 
-        it('should return error "User Not Found" if user not found', async () => {
+        it('Should Return Error: "User Not Found" If User Not Found', async () => {
             const res = await request(app).get('/api/users/999999');
             expect(res.body.error).toBe('User Not Found');
         });
     });
 
     describe('GET /api/about', () => {
-        it('should return 200 status', async () => {
+        it('Should Return 200 Status', async () => {
             const res = await request(app).get('/api/about');
             expect(res.statusCode).toBe(200);
         });
 
-        it('should return message "Team Information Retrieved Successfully"', async () => {
+        it('Should Return Message: "Team Information Retrieved Successfully"', async () => {
             const res = await request(app).get('/api/about');
             expect(res.body.message).toBe('Team Information Retrieved Successfully');
         });
 
-        it('should return data as an array', async () => {
+        it('Should Return Data As An Array', async () => {
             const res = await request(app).get('/api/about');
             expect(res.body).toHaveProperty('data');
             expect(Array.isArray(res.body.data)).toBe(true);
         });
 
-        it('should return exactly 2 team members', async () => {
+        it('Should Return Exactly 2 Team Members', async () => {
             const res = await request(app).get('/api/about');
             expect(res.body.data.length).toBe(2);
         });
 
-        it('each team member should have first_name as string', async () => {
+        it('Each Team Member Should Have First Name As String', async () => {
             const res = await request(app).get('/api/about');
             res.body.data.forEach(member => {
                 expect(member).toHaveProperty('first_name');
@@ -667,7 +664,7 @@ describe('API Routes Integration Tests (Real DB)', () => {
             });
         });
 
-        it('each team member should have last_name as string', async () => {
+        it('Each Team Member Should Have Last Name As String', async () => {
             const res = await request(app).get('/api/about');
             res.body.data.forEach(member => {
                 expect(member).toHaveProperty('last_name');
