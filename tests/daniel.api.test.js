@@ -14,7 +14,7 @@ beforeAll(async () => {
     // Connect to the test database
     const uri = process.env.MONGODB_URI_TEST;
     if (!uri) {
-        throw new Error('MONGODB_URI_TEST is not defined in environment variables');
+        throw new Error('MONGODB_URI_TEST Is Not Defined In Environment Variables');
     }
     await mongoose.connect(uri);
 });
@@ -49,48 +49,48 @@ describe('API Routes Integration Tests (Real DB)', () => {
             );
         });
 
-        // Positive tests for each field in response.data
-        it('should add a cost item successfully and return status 201', async () => {
+        // Positive Tests For Each Field In response.data
+        it('Should Add A Cost Item Successfully And Return Status 201', async () => {
             const res = await request(app).post('/api/add').send(validCost);
             expect(res.statusCode).toBe(201);
         });
 
-        it('should return message "Cost Item Added Successfully"', async () => {
+        it('Should Return Message: " Cost Item Added Successfully"', async () => {
             const res = await request(app).post('/api/add').send(validCost);
             expect(res.body.message).toBe('Cost Item Added Successfully');
         });
 
-        it('should return description field matching input', async () => {
+        it('Should Return Description Field Matching Input', async () => {
             const res = await request(app).post('/api/add').send(validCost);
             expect(res.body.data).toHaveProperty('description');
             expect(res.body.data.description).toBe(validCost.description);
         });
 
-        it('should return category field matching input', async () => {
+        it('Should Return Category Field Matching Input', async () => {
             const res = await request(app).post('/api/add').send(validCost);
             expect(res.body.data).toHaveProperty('category');
             expect(res.body.data.category).toBe(validCost.category);
         });
 
-        it('should return userid field matching input', async () => {
+        it('Should Return Userid Field Matching Input', async () => {
             const res = await request(app).post('/api/add').send(validCost);
             expect(res.body.data).toHaveProperty('userid');
             expect(res.body.data.userid).toBe(validCost.userid);
         });
 
-        it('should return sum field close to input', async () => {
+        it('Should Return Sum Field Close To Input', async () => {
             const res = await request(app).post('/api/add').send(validCost);
             expect(res.body.data).toHaveProperty('sum');
             expect(res.body.data.sum).toBeCloseTo(validCost.sum);
         });
 
-        it('should return date field matching input ISO string', async () => {
+        it('Should Return Date Field Matching Input Iso String', async () => {
             const res = await request(app).post('/api/add').send(validCost);
             expect(res.body.data).toHaveProperty('date');
             expect(new Date(res.body.data.date).toISOString()).toBe(new Date(validCost.date).toISOString());
         });
 
-        it('should accept negative sum and save it correctly', async () => {
+        it('Should Accept Negative Sum And Save It Correctly', async () => {
             await User.updateOne(
                 { id: 123123 },
                 { id: 123123, first_name: 'mosh', last_name: 'israeli' },
@@ -108,7 +108,7 @@ describe('API Routes Integration Tests (Real DB)', () => {
             expect(res.body.data.sum).toBeCloseTo(-20);
         });
 
-        it('should accept sum as zero and save it correctly', async () => {
+        it('Should Accept Sum As Zero And Save It Correctly', async () => {
             await User.updateOne(
                 { id: 123123 },
                 { id: 123123, first_name: 'mosh', last_name: 'israeli' },
@@ -126,7 +126,7 @@ describe('API Routes Integration Tests (Real DB)', () => {
             expect(res.body.data.sum).toBeCloseTo(0);
         });
 
-        it('should return 400 if sum is not a number', async () => {
+        it('Should Return 400 If Sum Is Not A Number', async () => {
             await User.updateOne(
                 { id: 1 },
                 { id: 1, first_name: 'John', last_name: 'Doe' },

@@ -14,47 +14,47 @@ describe('API Routes Integration Tests (Using URL)', () => {
             date: '2024-06-01',
         };
 
-        it('should add a cost item successfully and return status 201', async () => {
+        it('Should Add A Cost Item Successfully And Return Status 201', async () => {
             const res = await request(BASE_URL).post('/api/add').send(validCost);
             expect(res.statusCode).toBe(201);
         });
 
-        it('should return message "Cost Item Added Successfully"', async () => {
+        it('Should Return Message " Cost Item Added Successfully"', async () => {
             const res = await request(BASE_URL).post('/api/add').send(validCost);
             expect(res.body.message).toBe('Cost Item Added Successfully');
         });
 
-        it('should return description field matching input', async () => {
+        it('Should Return Description Field Matching Input', async () => {
             const res = await request(BASE_URL).post('/api/add').send(validCost);
             expect(res.body.data).toHaveProperty('description');
             expect(res.body.data.description).toBe(validCost.description);
         });
 
-        it('should return category field matching input', async () => {
+        it('Should Return Category Field Matching Input', async () => {
             const res = await request(BASE_URL).post('/api/add').send(validCost);
             expect(res.body.data).toHaveProperty('category');
             expect(res.body.data.category).toBe(validCost.category);
         });
 
-        it('should return userid field matching input', async () => {
+        it('Should Return Userid Field Matching Input', async () => {
             const res = await request(BASE_URL).post('/api/add').send(validCost);
             expect(res.body.data).toHaveProperty('userid');
             expect(res.body.data.userid).toBe(validCost.userid);
         });
 
-        it('should return sum field close to input', async () => {
+        it('Should Return Sum Field Close To Input', async () => {
             const res = await request(BASE_URL).post('/api/add').send(validCost);
             expect(res.body.data).toHaveProperty('sum');
             expect(res.body.data.sum).toBeCloseTo(validCost.sum);
         });
 
-        it('should return date field matching input ISO string', async () => {
+        it('Should Return Date Field Matching Input Iso String', async () => {
             const res = await request(BASE_URL).post('/api/add').send(validCost);
             expect(res.body.data).toHaveProperty('date');
             expect(new Date(res.body.data.date).toISOString()).toBe(new Date(validCost.date).toISOString());
         });
 
-        it('should accept negative sum and save it correctly', async () => {
+        it('Should Accept Negative Sum And Save It Correctly', async () => {
             const negativeSumCost = {
                 description: 'Refund',
                 category: 'health',
@@ -67,7 +67,7 @@ describe('API Routes Integration Tests (Using URL)', () => {
             expect(res.body.data.sum).toBeCloseTo(-20);
         });
 
-        it('should accept sum as zero and save it correctly', async () => {
+        it('Should Accept Sum As Zero And Save It Correctly', async () => {
             const zeroSumCost = {
                 description: 'Free item',
                 category: 'education',
@@ -80,7 +80,7 @@ describe('API Routes Integration Tests (Using URL)', () => {
             expect(res.body.data.sum).toBeCloseTo(0);
         });
 
-        it('should set current date if date field is missing', async () => {
+        it('Should Set Current Date If Date Field Is Missing', async () => {
             const costWithoutDate = {
                 description: 'Lunch',
                 category: 'food',
@@ -99,7 +99,7 @@ describe('API Routes Integration Tests (Using URL)', () => {
             expect(returnedDate.getTime()).toBeLessThanOrEqual(afterRequest.getTime());
         });
 
-        it('should return 404 if user not found', async () => {
+        it('Should Return 404 If User Not Found', async () => {
             const res = await request(BASE_URL).post('/api/add').send({
                 description: 'Lunch',
                 category: 'food',
@@ -110,7 +110,7 @@ describe('API Routes Integration Tests (Using URL)', () => {
             expect(res.statusCode).toBe(404);
         });
 
-        it('should return error "User Not Found" if user not found', async () => {
+        it('Should Return Error " User Not Found" If User Not Found', async () => {
             const res = await request(BASE_URL).post('/api/add').send({
                 description: 'Lunch',
                 category: 'food',
@@ -125,7 +125,7 @@ describe('API Routes Integration Tests (Using URL)', () => {
         const requiredFields = ['description', 'category', 'userid', 'sum'];
 
         requiredFields.forEach(field => {
-            it(`should return 400 if required field ${field} is missing`, async () => {
+            it(`Should Return 400 If Required Field ${field} Is Missing`, async () => {
                 const costData = {
                     description: 'Lunch',
                     category: 'food',
@@ -149,7 +149,7 @@ describe('API Routes Integration Tests (Using URL)', () => {
             });
         });
 
-        it('should return 400 if sum is not a number', async () => {
+        it('Should Return 400 If Sum Is Not A Number', async () => {
             const res = await request(BASE_URL).post('/api/add').send({
                 description: 'Lunch',
                 category: 'food',
@@ -162,7 +162,7 @@ describe('API Routes Integration Tests (Using URL)', () => {
             expect(res.body.message).toMatch(/sum/i);
         });
 
-        it('should return 400 if category is empty string', async () => {
+        it('Should Return 400 If Category Is Empty String', async () => {
             const res = await request(BASE_URL).post('/api/add').send({
                 description: 'Lunch',
                 category: '',
@@ -175,7 +175,7 @@ describe('API Routes Integration Tests (Using URL)', () => {
             expect(res.body.message).toMatch(/category/i);
         });
 
-        it('should return 400 if description is empty string', async () => {
+        it('Should Return 400 If Description Is Empty String', async () => {
             const res = await request(BASE_URL).post('/api/add').send({
                 description: '',
                 category: 'food',
@@ -188,7 +188,7 @@ describe('API Routes Integration Tests (Using URL)', () => {
             expect(res.body.message).toMatch(/description/i);
         });
 
-        it('should return 400 if date is invalid format', async () => {
+        it('Should Return 400 If Date Is Invalid Format', async () => {
             const res = await request(BASE_URL).post('/api/add').send({
                 description: 'Lunch',
                 category: 'food',
@@ -203,7 +203,7 @@ describe('API Routes Integration Tests (Using URL)', () => {
     });
 
     describe('GET /api/report', () => {
-        it('should return 200 for valid report request', async () => {
+        it('Should Return 200 For Valid Report Request', async () => {
             const res = await request(BASE_URL)
                 .get('/api/report')
                 .query({ id: 123123, year: '2024', month: '6' });
@@ -211,7 +211,7 @@ describe('API Routes Integration Tests (Using URL)', () => {
             expect(res.statusCode).toBe(200);
         });
 
-        it('should return userid field matching input', async () => {
+        it('Should Return Userid Field Matching Input', async () => {
             const res = await request(BASE_URL)
                 .get('/api/report')
                 .query({ id: 123123, year: '2024', month: '6' });
@@ -220,7 +220,7 @@ describe('API Routes Integration Tests (Using URL)', () => {
             expect(res.body.userid).toBe(123123);
         });
 
-        it('should return year field as number matching input', async () => {
+        it('Should Return Year Field As Number Matching Input', async () => {
             const res = await request(BASE_URL)
                 .get('/api/report')
                 .query({ id: 123123, year: '2024', month: '6' });
@@ -229,7 +229,7 @@ describe('API Routes Integration Tests (Using URL)', () => {
             expect(res.body.year).toBe(2024);
         });
 
-        it('should return month field as number matching input', async () => {
+        it('Should Return Month Field As Number Matching Input', async () => {
             const res = await request(BASE_URL)
                 .get('/api/report')
                 .query({ id: 123123, year: '2024', month: '6' });
@@ -238,7 +238,7 @@ describe('API Routes Integration Tests (Using URL)', () => {
             expect(res.body.month).toBe(6);
         });
 
-        it('should return costs field as array', async () => {
+        it('Should Return Costs Field As Array', async () => {
             const res = await request(BASE_URL)
                 .get('/api/report')
                 .query({ id: 123123, year: '2024', month: '6' });
@@ -247,7 +247,7 @@ describe('API Routes Integration Tests (Using URL)', () => {
             expect(Array.isArray(res.body.costs)).toBe(true);
         });
 
-        it('should return correct number of items in food category', async () => {
+        it('Should Return Correct Number Of Items In Food Category', async () => {
             const res = await request(BASE_URL)
                 .get('/api/report')
                 .query({ id: 123123, year: '2024', month: '6' });
@@ -257,7 +257,7 @@ describe('API Routes Integration Tests (Using URL)', () => {
             expect(Array.isArray(foodCategory.food)).toBe(true);
         });
 
-        it('should have sum, description, and day fields in each cost item', async () => {
+        it('Should Have Sum, Description, And Day Fields In Each Cost Item', async () => {
             const res = await request(BASE_URL)
                 .get('/api/report')
                 .query({ id: 123123, year: '2024', month: '6' });
@@ -277,7 +277,7 @@ describe('API Routes Integration Tests (Using URL)', () => {
             });
         });
 
-        it('should return 404 if user not found', async () => {
+        it('Should Return 404 If User Not Found', async () => {
             const res = await request(BASE_URL)
                 .get('/api/report')
                 .query({ id: 999999999, year: '2024', month: '6' });
@@ -285,7 +285,7 @@ describe('API Routes Integration Tests (Using URL)', () => {
             expect(res.statusCode).toBe(404);
         });
 
-        it('should return error "User Not Found" if user not found', async () => {
+        it('Should Return Error " User Not Found" If User Not Found', async () => {
             const res = await request(BASE_URL)
                 .get('/api/report')
                 .query({ id: 999999999, year: '2024', month: '6' });
@@ -293,7 +293,7 @@ describe('API Routes Integration Tests (Using URL)', () => {
             expect(res.body.error).toBe('User Not Found');
         });
 
-        it('should return 400 for invalid year format (non-numeric)', async () => {
+        it('Should Return 400 For Invalid Year Format (Non Numeric)', async () => {
             const res = await request(BASE_URL)
                 .get('/api/report')
                 .query({ id: 123123, year: '20a4', month: '6' });
@@ -302,7 +302,7 @@ describe('API Routes Integration Tests (Using URL)', () => {
             expect(res.body.error).toBe('Invalid Year Format');
         });
 
-        it('should return 400 for invalid month (non-numeric)', async () => {
+        it('Should Return 400 For Invalid Month (Non Numeric)', async () => {
             const res = await request(BASE_URL)
                 .get('/api/report')
                 .query({ id: 123123, year: '2024', month: 'ab' });
@@ -310,7 +310,7 @@ describe('API Routes Integration Tests (Using URL)', () => {
             expect(res.statusCode).toBe(400);
         });
 
-        it('should return error "Invalid Month" for month out of range (0)', async () => {
+        it('Should Return Error " Invalid Month" For Month Out Of Range (0)', async () => {
             const res = await request(BASE_URL)
                 .get('/api/report')
                 .query({ id: 123123, year: '2024', month: '0' });
@@ -318,7 +318,7 @@ describe('API Routes Integration Tests (Using URL)', () => {
             expect(res.body.error).toBe('Invalid Month');
         });
 
-        it('should return error "Invalid Month" for month out of range (13)', async () => {
+        it('Should Return Error " Invalid Month" For Month Out Of Range (13)', async () => {
             const res = await request(BASE_URL)
                 .get('/api/report')
                 .query({ id: 123123, year: '2024', month: '13' });
@@ -326,7 +326,7 @@ describe('API Routes Integration Tests (Using URL)', () => {
             expect(res.body.error).toBe('Invalid Month');
         });
 
-        it('should return 400 if year is missing', async () => {
+        it('Should Return 400 If Year Is Missing', async () => {
             const res = await request(BASE_URL)
                 .get('/api/report')
                 .query({ id: 123123, month: '6' });
@@ -334,7 +334,7 @@ describe('API Routes Integration Tests (Using URL)', () => {
             expect(res.statusCode).toBe(400);
         });
 
-        it('should return 400 if month is missing', async () => {
+        it('Should Return 400 If Month Is Missing', async () => {
             const res = await request(BASE_URL)
                 .get('/api/report')
                 .query({ id: 123123, year: '2024' });
@@ -342,7 +342,7 @@ describe('API Routes Integration Tests (Using URL)', () => {
             expect(res.statusCode).toBe(400);
         });
 
-        it('should return 400 if id is missing', async () => {
+        it('Should Return 400 If Id Is Missing', async () => {
             const res = await request(BASE_URL)
                 .get('/api/report')
                 .query({ year: '2024', month: '6' });
@@ -352,74 +352,74 @@ describe('API Routes Integration Tests (Using URL)', () => {
     });
 
     describe('GET /api/users/:id', () => {
-        it('should return 200 for existing user', async () => {
+        it('Should Return 200 For Existing User', async () => {
             const res = await request(BASE_URL).get('/api/users/123123');
             expect(res.statusCode).toBe(200);
         });
 
-        it('should return message "User Information Retrieved Successfully"', async () => {
+        it('Should Return Message: "User Information Retrieved Successfully"', async () => {
             const res = await request(BASE_URL).get('/api/users/123123');
             expect(res.body.message).toBe('User Information Retrieved Successfully');
         });
 
-        it('should return user id matching param', async () => {
+        it('Should Return User Id Matching Param', async () => {
             const res = await request(BASE_URL).get('/api/users/123123');
             expect(res.body.data).toHaveProperty('id');
             expect(res.body.data.id).toBe(123123);
         });
 
-        it('should return first_name as string', async () => {
+        it('Should Return First Name As String', async () => {
             const res = await request(BASE_URL).get('/api/users/123123');
             expect(res.body.data).toHaveProperty('first_name');
             expect(typeof res.body.data.first_name).toBe('string');
         });
 
-        it('should return last_name as string', async () => {
+        it('Should Return Last Name As String', async () => {
             const res = await request(BASE_URL).get('/api/users/123123');
             expect(res.body.data).toHaveProperty('last_name');
             expect(typeof res.body.data.last_name).toBe('string');
         });
 
-        it('should return total cost as number', async () => {
+        it('Should Return Total Cost As Number', async () => {
             const res = await request(BASE_URL).get('/api/users/123123');
             expect(res.body.data).toHaveProperty('total');
             expect(typeof res.body.data.total).toBe('number');
         });
 
-        it('should return 404 if user not found', async () => {
+        it('Should Return 404 If User Not Found', async () => {
             const res = await request(BASE_URL).get('/api/users/999999999');
             expect(res.statusCode).toBe(404);
         });
 
-        it('should return error "User Not Found" if user not found', async () => {
+        it('Should Return Error " User Not Found" If User Not Found', async () => {
             const res = await request(BASE_URL).get('/api/users/999999999');
             expect(res.body.error).toBe('User Not Found');
         });
     });
 
     describe('GET /api/about', () => {
-        it('should return 200 status', async () => {
+        it('Should Return 200 Status', async () => {
             const res = await request(BASE_URL).get('/api/about');
             expect(res.statusCode).toBe(200);
         });
 
-        it('should return message "Team Information Retrieved Successfully"', async () => {
+        it('Should Return Message: "Team Information Retrieved Successfully"', async () => {
             const res = await request(BASE_URL).get('/api/about');
             expect(res.body.message).toBe('Team Information Retrieved Successfully');
         });
 
-        it('should return data as an array', async () => {
+        it('Should Return Data As An Array', async () => {
             const res = await request(BASE_URL).get('/api/about');
             expect(res.body).toHaveProperty('data');
             expect(Array.isArray(res.body.data)).toBe(true);
         });
 
-        it('should return at least 2 team members', async () => {
+        it('Should Return At Least 2 Team Members', async () => {
             const res = await request(BASE_URL).get('/api/about');
             expect(res.body.data.length).toBeGreaterThanOrEqual(2);
         });
 
-        it('each team member should have first_name as string', async () => {
+        it('Each Team Member Should Have First Name As String', async () => {
             const res = await request(BASE_URL).get('/api/about');
             res.body.data.forEach(member => {
                 expect(member).toHaveProperty('first_name');
@@ -427,7 +427,7 @@ describe('API Routes Integration Tests (Using URL)', () => {
             });
         });
 
-        it('each team member should have last_name as string', async () => {
+        it('Each Team Member Should Have Last Name As String', async () => {
             const res = await request(BASE_URL).get('/api/about');
             res.body.data.forEach(member => {
                 expect(member).toHaveProperty('last_name');
@@ -441,14 +441,14 @@ describe('API Routes Integration Tests (Using URL)', () => {
 afterAll(async () => {
     const uri = process.env.MONGODB_URI_TEST;
     if (!uri) {
-        throw new Error('MONGODB_URI_TEST is not defined in environment variables');
+        throw new Error('MONGODB_URI_TEST Is Not Defined In Environment Variables');
     }
 
     try {
         await mongoose.connect(uri);
         await mongoose.connection.collection('costs').deleteMany({});
     } catch (error) {
-        console.error('Error cleaning up costs collection:', error);
+        console.error('Error Cleaning Up Costs Collection:', error);
     } finally {
         await mongoose.connection.close();
     }
