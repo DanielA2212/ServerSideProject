@@ -26,7 +26,7 @@ afterAll(async () => {
 
 beforeEach(async () => {
     // Clear collections before each test to have a clean slate
-    await User.deleteMany({ id: { $ne: 123123 } });
+    await User.deleteMany({ id: { $ne: 123123 }, first_name: { $ne: 'mosh'}, last_name: { $ne: 'israeli'}});
     await Cost.deleteMany({});
 });
 
@@ -44,7 +44,7 @@ describe('API Routes Integration Tests (Real DB)', () => {
             // Ensure user 123123 exists for positive tests
             await User.updateOne(
                 { id: 123123 },
-                { id: 123123, first_name: 'Test', last_name: 'User' },
+                { id: 123123, first_name: 'mosh', last_name: 'israeli' },
                 { upsert: true }
             );
         });
@@ -55,7 +55,7 @@ describe('API Routes Integration Tests (Real DB)', () => {
             expect(res.statusCode).toBe(201);
         });
 
-        it('Should Return Message: " Cost Item Added Successfully"', async () => {
+        it('Should Return Message: "Cost Item Added Successfully"', async () => {
             const res = await request(app).post('/api/add').send(validCost);
             expect(res.body.message).toBe('Cost Item Added Successfully');
         });
@@ -128,14 +128,14 @@ describe('API Routes Integration Tests (Real DB)', () => {
 
         it('Should Return 400 If Sum Is Not A Number', async () => {
             await User.updateOne(
-                { id: 1 },
-                { id: 1, first_name: 'John', last_name: 'Doe' },
+                { id: 123123 },
+                { id: 123123, first_name: 'mosh', last_name: 'israeli' },
                 { upsert: true }
             );
             const res = await request(app).post('/api/add').send({
                 description: 'Lunch',
                 category: 'food',
-                userid: 1,
+                userid: 123123,
                 sum: 'not-a-number',
                 date: '2024-06-01',
             });
@@ -146,14 +146,14 @@ describe('API Routes Integration Tests (Real DB)', () => {
 
         it('Should Set Current Date If Date Field Is Missing', async () => {
             await User.updateOne(
-                { id: 1 },
-                { id: 1, first_name: 'John', last_name: 'Doe' },
+                { id: 123123 },
+                { id: 123123, first_name: 'mosh', last_name: 'israeli' },
                 { upsert: true }
             );
             const costWithoutDate = {
                 description: 'Lunch',
                 category: 'food',
-                userid: 1,
+                userid: 123123,
                 sum: 10,
             };
             const beforeRequest = new Date();
@@ -182,7 +182,7 @@ describe('API Routes Integration Tests (Real DB)', () => {
             expect(res.statusCode).toBe(404);
         });
 
-        it('Should Return Error: " User Not Found" If User Not Found', async () => {
+        it('Should Return Error: "User Not Found" If User Not Found', async () => {
             const res = await request(app).post('/api/add').send({
                 description: 'Lunch',
                 category: 'food',
@@ -233,14 +233,14 @@ describe('API Routes Integration Tests (Real DB)', () => {
 
         it('Should Return 400 If Category Is Empty String', async () => {
             await User.updateOne(
-                { id: 1 },
-                { id: 1, first_name: 'John', last_name: 'Doe' },
+                { id: 123123 },
+                { id: 123123, first_name: 'mosh', last_name: 'israeli' },
                 { upsert: true }
             );
             const res = await request(app).post('/api/add').send({
                 description: 'Lunch',
                 category: '',
-                userid: 1,
+                userid: 123123,
                 sum: 10,
                 date: '2024-06-01',
             });
@@ -251,14 +251,14 @@ describe('API Routes Integration Tests (Real DB)', () => {
 
         it('Should Return 400 If Description Is Empty String', async () => {
             await User.updateOne(
-                { id: 1 },
-                { id: 1, first_name: 'John', last_name: 'Doe' },
+                { id: 123123 },
+                { id: 123123, first_name: 'mosh', last_name: 'israeli' },
                 { upsert: true }
             );
             const res = await request(app).post('/api/add').send({
                 description: '',
                 category: 'food',
-                userid: 1,
+                userid: 123123,
                 sum: 10,
                 date: '2024-06-01',
             });
@@ -269,14 +269,14 @@ describe('API Routes Integration Tests (Real DB)', () => {
 
         it('Should Return 400 If Date Is Invalid Format', async () => {
             await User.updateOne(
-                { id: 1 },
-                { id: 1, first_name: 'John', last_name: 'Doe' },
+                { id: 123123 },
+                { id: 123123, first_name: 'mosh', last_name: 'israeli' },
                 { upsert: true }
             );
             const res = await request(app).post('/api/add').send({
                 description: 'Lunch',
                 category: 'food',
-                userid: 1,
+                userid: 123123,
                 sum: 10,
                 date: 'invalid-date',
             });
@@ -291,7 +291,7 @@ describe('API Routes Integration Tests (Real DB)', () => {
             // Ensure User 123123 Exists For Positive Tests
             await User.updateOne(
                 { id: 123123 },
-                { id: 123123, first_name: 'Test', last_name: 'User' },
+                { id: 123123, first_name: 'mosh', last_name: 'israeli' },
                 { upsert: true }
             );
         });
@@ -404,7 +404,7 @@ describe('API Routes Integration Tests (Real DB)', () => {
             expect(res.statusCode).toBe(404);
         });
 
-        it('Should Return Error " User Not Found" If User Not Found', async () => {
+        it('Should Return Error: "User Not Found" If User Not Found', async () => {
             const res = await request(app)
                 .get('/api/report')
                 .query({ id: 999999, year: '2024', month: '6' });
@@ -414,98 +414,98 @@ describe('API Routes Integration Tests (Real DB)', () => {
 
         it('Should Return 400 For Invalid Year Format (Non Numeric)', async () => {
             await User.updateOne(
-                { id: 1 },
-                { id: 1, first_name: 'John', last_name: 'Doe' },
+                { id: 123123 },
+                { id: 123123, first_name: 'mosh', last_name: 'israeli' },
                 { upsert: true }
             );
 
             const res = await request(app)
                 .get('/api/report')
-                .query({ id: 1, year: '20a4', month: '6' });
+                .query({ id: 123123, year: '20a4', month: '6' });
 
             expect(res.statusCode).toBe(400);
         });
 
         it('Should Return Error: "Invalid Year Format" For Invalid Year', async () => {
             await User.updateOne(
-                { id: 1 },
-                { id: 1, first_name: 'John', last_name: 'Doe' },
+                { id: 123123 },
+                { id: 123123, first_name: 'mosh', last_name: 'israeli' },
                 { upsert: true }
             );
 
             const res = await request(app)
                 .get('/api/report')
-                .query({ id: 1, year: '20a4', month: '6' });
+                .query({ id: 123123, year: '20a4', month: '6' });
 
             expect(res.body.error).toBe('Invalid Year Format');
         });
 
         it('Should Return 400 For Invalid Month (Non Numeric)', async () => {
             await User.updateOne(
-                { id: 1 },
-                { id: 1, first_name: 'John', last_name: 'Doe' },
+                { id: 123123 },
+                { id: 123123, first_name: 'mosh', last_name: 'israeli' },
                 { upsert: true }
             );
 
             const res = await request(app)
                 .get('/api/report')
-                .query({ id: 1, year: '2024', month: 'ab' });
+                .query({ id: 123123, year: '2024', month: 'ab' });
 
             expect(res.statusCode).toBe(400);
         });
 
         it('Should Return Error: "Invalid Month" For Month Out Of Range (0)', async () => {
             await User.updateOne(
-                { id: 1 },
-                { id: 1, first_name: 'John', last_name: 'Doe' },
+                { id: 123123 },
+                { id: 123123, first_name: 'mosh', last_name: 'israeli' },
                 { upsert: true }
             );
 
             const res = await request(app)
                 .get('/api/report')
-                .query({ id: 1, year: '2024', month: '0' });
+                .query({ id: 123123, year: '2024', month: '0' });
 
             expect(res.body.error).toBe('Invalid Month');
         });
 
         it('Should Return Error: "Invalid Month" For Month Out Of Range (13)', async () => {
             await User.updateOne(
-                { id: 1 },
-                { id: 1, first_name: 'John', last_name: 'Doe' },
+                { id: 123123 },
+                { id: 123123, first_name: 'mosh', last_name: 'israeli' },
                 { upsert: true }
             );
 
             const res = await request(app)
                 .get('/api/report')
-                .query({ id: 1, year: '2024', month: '13' });
+                .query({ id: 123123, year: '2024', month: '13' });
 
             expect(res.body.error).toBe('Invalid Month');
         });
 
         it('Should Return 400 If Year Is Missing', async () => {
             await User.updateOne(
-                { id: 1 },
-                { id: 1, first_name: 'John', last_name: 'Doe' },
+                { id: 123123 },
+                { id: 123123, first_name: 'mosh', last_name: 'israeli' },
                 { upsert: true }
             );
 
             const res = await request(app)
                 .get('/api/report')
-                .query({ id: 1, month: '6' });
+                .query({ id: 123123, month: '6' });
 
             expect(res.statusCode).toBe(400);
         });
 
         it('Should Return 400 If Month Is Missing', async () => {
             await User.updateOne(
-                { id: 1 },
-                { id: 1, first_name: 'John', last_name: 'Doe' },
+                { id: 123123 },
+                { id: 123123, first_name: 'mosh', last_name: 'israeli' },
                 { upsert: true }
             );
 
             const res = await request(app)
                 .get('/api/report')
-                .query({ id: 1, year: '2024' });
+                .query({ id: 123123, year: '2024' });
 
             expect(res.statusCode).toBe(400);
         });
@@ -522,104 +522,62 @@ describe('API Routes Integration Tests (Real DB)', () => {
     describe('GET /api/users/:id', () => {
         beforeEach(async () => {
             // Clear users and costs except id 123123
-            await User.deleteMany({ id: { $ne: 123123 } });
+            await User.deleteMany({ id: { $ne: 123123 }, first_name: { $ne: 'mosh'}, last_name: { $ne: 'israeli'}});
             await Cost.deleteMany({});
         });
 
         it('Should Return 200 For Existing User', async () => {
-            const user = new User({
-                id: 1,
-                first_name: 'John',
-                last_name: 'Doe',
-            });
-            await user.save();
 
-            const res = await request(app).get('/api/users/1');
+            const res = await request(app).get('/api/users/123123');
             expect(res.statusCode).toBe(200);
         });
 
         it('Should Return Message: "User Information Retrieved Successfully"', async () => {
-            const user = new User({
-                id: 1,
-                first_name: 'John',
-                last_name: 'Doe',
-            });
-            await user.save();
 
-            const res = await request(app).get('/api/users/1');
+            const res = await request(app).get('/api/users/123123');
             expect(res.body.message).toBe('User Information Retrieved Successfully');
         });
 
         it('Should Return User Id Matching Param', async () => {
-            const user = new User({
-                id: 1,
-                first_name: 'John',
-                last_name: 'Doe',
-            });
-            await user.save();
 
-            const res = await request(app).get('/api/users/1');
+            const res = await request(app).get('/api/users/123123');
             expect(res.body.data).toHaveProperty('id');
-            expect(res.body.data.id).toBe(1);
+            expect(res.body.data.id).toBe(123123);
         });
 
         it('Should Return First Name As String Matching User', async () => {
-            const user = new User({
-                id: 1,
-                first_name: 'John',
-                last_name: 'Doe',
-            });
-            await user.save();
 
-            const res = await request(app).get('/api/users/1');
+            const res = await request(app).get('/api/users/123123');
             expect(res.body.data).toHaveProperty('first_name');
             expect(typeof res.body.data.first_name).toBe('string');
-            expect(res.body.data.first_name).toBe('John');
+            expect(res.body.data.first_name).toBe('mosh');
         });
 
         it('Should Return Last Name As String Matching User', async () => {
-            const user = new User({
-                id: 1,
-                first_name: 'John',
-                last_name: 'Doe',
-            });
-            await user.save();
 
-            const res = await request(app).get('/api/users/1');
+            const res = await request(app).get('/api/users/123123');
             expect(res.body.data).toHaveProperty('last_name');
             expect(typeof res.body.data.last_name).toBe('string');
-            expect(res.body.data.last_name).toBe('Doe');
+            expect(res.body.data.last_name).toBe('israeli');
         });
 
         it('Should Return Total Cost As Number Summing All Costs', async () => {
-            const user = new User({
-                id: 1,
-                first_name: 'John',
-                last_name: 'Doe',
-            });
-            await user.save();
 
             const costs = [
-                { description: 'Item1', category: 'food', userid: 1, sum: 50, date: new Date() },
-                { description: 'Item2', category: 'sport', userid: 1, sum: 50, date: new Date() },
+                { description: 'Item1', category: 'food', userid: 123123, sum: 50, date: new Date() },
+                { description: 'Item2', category: 'education', userid: 123123, sum: 50, date: new Date() },
             ];
             await Cost.insertMany(costs);
 
-            const res = await request(app).get('/api/users/1');
+            const res = await request(app).get('/api/users/123123');
             expect(res.body.data).toHaveProperty('total');
             expect(typeof res.body.data.total).toBe('number');
             expect(res.body.data.total).toBe(100);
         });
 
         it('Should Return Total 0 If User Has No Costs', async () => {
-            const user = new User({
-                id: 1,
-                first_name: 'John',
-                last_name: 'Doe',
-            });
-            await user.save();
 
-            const res = await request(app).get('/api/users/1');
+            const res = await request(app).get('/api/users/123123');
             expect(res.body.data.total).toBe(0);
         });
 
