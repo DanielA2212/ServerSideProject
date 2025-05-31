@@ -3,4 +3,7 @@
   <component name="Black">
     <option name="sdkName" value="Python 3.13 (ServerSideProjectFinalFR)" />
   </component>
+  <component name="ProjectRootManager">
+    <output url="file://$PROJECT_DIR$/out" />
+  </component>
 </project>

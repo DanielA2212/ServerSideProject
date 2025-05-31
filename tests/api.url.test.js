@@ -11,7 +11,7 @@ app.use(express.json());
 app.use('/api', apiRouter);
 
 afterAll(async () => {
-    // Clean up costs collection after all tests
+    // Cleanup costs collection after all tests
     await Cost.deleteMany();
 });
 
