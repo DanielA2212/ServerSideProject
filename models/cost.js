@@ -4,7 +4,7 @@ const costSchema = new mongoose.Schema({
     description: {
         type: String,
         required: true,
-        trim: true,
+        trim: true
     },
     category: {
         type: String,
@@ -18,7 +18,7 @@ const costSchema = new mongoose.Schema({
     },
     sum: {
         type: Number,
-        required: true,
+        required: true
     },
     date: {
         type: Date,

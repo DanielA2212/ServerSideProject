@@ -116,7 +116,7 @@ describe('API Routes Integration Tests (Real DB)', () => {
             );
             const zeroSumCost = {
                 description: 'Free item',
-                category: 'gift',
+                category: 'housing',
                 userid: 123123,
                 sum: 0,
                 date: '2024-06-01',
