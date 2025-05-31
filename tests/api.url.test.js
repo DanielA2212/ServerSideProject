@@ -1,14 +1,18 @@
 const request = require('supertest');
 const Cost = require("../models/cost");
-const mongoose = require('mongoose');
+const express = require("express");
+const apiRouter = require("../routes/api");
 require('dotenv').config();
 
 const BASE_URL = 'http://localhost:3000';
 
+const app = express();
+app.use(express.json());
+app.use('/api', apiRouter);
+
 afterAll(async () => {
     // Clean up costs collection after all tests
     await Cost.deleteMany();
-    await mongoose.connection.close();
 });
 
 describe('API Routes Integration Tests (Using URL)', () => {
