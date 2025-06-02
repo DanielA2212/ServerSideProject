@@ -62,7 +62,7 @@ router.post('/add', async (req, res) => {
  */
 router.get('/report', async (req, res) => {
     try {
-        const { id, year, month } = req.queinstractionsry;
+        const { id, year, month } = req.query;
 
         if (!id || !/^\d+$/.test(id)) {
             return res.status(400).json({
