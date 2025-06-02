@@ -2,7 +2,7 @@
 <module type="WEB_MODULE" version="4">
   <component name="FacetManager">
     <facet type="Python" name="Python facet">
-      <configuration sdkName="Python 3.11 (ServerSideNew)" />
+      <configuration sdkName="Python 3.13 (ServerSideProjectFinalFR)" />
     </facet>
   </component>
   <component name="NewModuleRootManager" inherit-compiler-output="true">
@@ -13,6 +13,6 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="@types/jest" level="application" />
     <orderEntry type="library" name="@types/jest" level="application" />
-    <orderEntry type="library" name="Python 3.11 (ServerSideNew) interpreter library" level="application" />
+    <orderEntry type="library" name="Python 3.13 (ServerSideProjectFinalFR) interpreter library" level="application" />
   </component>
 </module>

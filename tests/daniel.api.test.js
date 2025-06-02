@@ -515,7 +515,7 @@ describe('API Routes Integration Tests (Real DB)', () => {
                 .get('/api/report')
                 .query({ year: '2024', month: '6' });
 
-            expect(res.statusCode).toBe(500);
+            expect(res.statusCode).toBe(400);
         });
     });
 

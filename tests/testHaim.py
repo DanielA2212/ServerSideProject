@@ -60,7 +60,7 @@ try:
 
     #getting the report
 
-    url = line + "/api/report/?id=123123&year=2025&month=5"
+    url = line + "/api/report/?id=123123&year=2025&month=6"
 
     data = requests.get(url)
 
@@ -125,7 +125,7 @@ try:
 
     #getting the report
 
-    url = line + "/api/report/?id=123123&year=2025&month=5"
+    url = line + "/api/report/?id=123123&year=2025&month=6"
 
     data = requests.get(url)
 
