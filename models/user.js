@@ -11,6 +11,9 @@ const mongoose = require('mongoose');
 
 /**
  * Mongoose schema for the User collection.
+ * Defines the structure and validation rules for user documents in MongoDB.
+ *
+ * @type {mongoose.Schema}
  */
 const userSchema = new mongoose.Schema({
     id: {
@@ -41,6 +44,8 @@ const userSchema = new mongoose.Schema({
 
 /**
  * Mongoose model for users.
- * @type {import('mongoose').Model<User>}
+ * Provides an interface for creating, reading, updating, and deleting user documents.
+ *
+ * @type {mongoose.Model<User>}
  */
 module.exports = mongoose.model('User', userSchema);

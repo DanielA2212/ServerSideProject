@@ -4,16 +4,36 @@ const User = require('../models/user');
 const Cost = require('../models/cost');
 
 /**
- * @route POST /add
- * @description Adds a new cost item for a user
- * @param {string} req.body.description - Description of the cost
- * @param {string} req.body.category - Category of the cost
- * @param {number} req.body.userid - ID of the user
- * @param {number} req.body.sum - Amount of the cost
- * @param {string} req.body.date - Date of the cost (ISO format)
- * @returns {Object} 201 - Cost item created
- * @returns {Object} 400 - Failed to add cost
- * @returns {Object} 404 - User not found
+ * @typedef {Object} CostRequestBody
+ * @property {string} description - Description of the cost
+ * @property {string} category - Category of the cost
+ * @property {number} userid - ID of the user
+ * @property {number} sum - Amount of the cost
+ * @property {string} [date] - Date of the cost (ISO format, optional)
+ */
+
+/**
+ * @typedef {Object} ReportQuery
+ * @property {string} id - User ID
+ * @property {string} year - Year of the report
+ * @property {string} month - Month of the report (1-12)
+ */
+
+/**
+ * @typedef {Object} ApiResponse
+ * @property {string} [message] - Success message
+ * @property {string} [error] - Error type
+ * @property {*} [data] - Response data
+ */
+
+/**
+ * Adds a new cost item for a user
+ * Validates user existence before creating cost item
+ *
+ * @route POST /api/add
+ * @param {express.Request<{}, ApiResponse, CostRequestBody>} req - Express request object
+ * @param {express.Response<ApiResponse>} res - Express response object
+ * @returns {Promise<express.Response>} JSON response with created cost item or error
  */
 router.post('/add', async (req, res) => {
     try {
@@ -50,15 +70,13 @@ router.post('/add', async (req, res) => {
 });
 
 /**
- * @route GET /report
- * @description Retrieves a monthly report of costs for a user
- * @param {number} req.query.id - User ID
- * @param {number} req.query.year - Year of the report
- * @param {number} req.query.month - Month of the report (1-12)
- * @returns {Object} 200 - Report data
- * @returns {Object} 400 - Invalid parameters
- * @returns {Object} 404 - User not found
- * @returns {Object} 500 - Failed to generate a report
+ * Retrieves a monthly report of costs for a user
+ * Groups costs by category and includes detailed breakdown
+ *
+ * @route GET /api/report
+ * @param {express.Request<{}, ApiResponse, {}, ReportQuery>} req - Express request object
+ * @param {express.Response<ApiResponse>} res - Express response object
+ * @returns {Promise<express.Response>} JSON response with monthly cost report or error
  */
 router.get('/report', async (req, res) => {
     try {
@@ -67,7 +85,7 @@ router.get('/report', async (req, res) => {
         if (!id || !/^\d+$/.test(id)) {
             return res.status(400).json({
                 error: 'Invalid User ID',
-                message: 'User ID Nust Be A Valid Number'
+                message: 'User ID Must Be A Valid Number'
             });
         }
 
@@ -143,12 +161,13 @@ router.get('/report', async (req, res) => {
 });
 
 /**
- * @route GET /users/:id
- * @description Retrieves user info and total cost sum
- * @param {number} req.params.id - User ID
- * @returns {Object} 200 - User info and total cost
- * @returns {Object} 404 - User not found
- * @returns {Object} 400 - Error retrieving user info
+ * Retrieves user information and calculates total cost sum
+ * Returns user details along with aggregated cost total
+ *
+ * @route GET /api/users/:id
+ * @param {express.Request<{id: string}, ApiResponse>} req - Express request object
+ * @param {express.Response<ApiResponse>} res - Express response object
+ * @returns {Promise<express.Response>} JSON response with user info and total costs or error
  */
 router.get('/users/:id', async (req, res) => {
     const id = Number(req.params.id);
@@ -185,9 +204,13 @@ router.get('/users/:id', async (req, res) => {
 });
 
 /**
- * @route GET /about
- * @description Returns team member info
- * @returns {Object} 200 - List of team members
+ * Returns information about the development team
+ * Static endpoint providing team member details
+ *
+ * @route GET /api/about
+ * @param {express.Request} req - Express request object
+ * @param {express.Response<ApiResponse>} res - Express response object
+ * @returns {express.Response} JSON response with team member information
  */
 router.get('/about', (req, res) => {
     const team = [
@@ -200,4 +223,8 @@ router.get('/about', (req, res) => {
     });
 });
 
+/**
+ * Export the configured router with all API routes
+ * @type {express.Router}
+ */
 module.exports = router;

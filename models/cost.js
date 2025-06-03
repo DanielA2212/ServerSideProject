@@ -11,6 +11,9 @@ const mongoose = require('mongoose');
 
 /**
  * Mongoose schema for the Cost collection.
+ * Defines the structure and validation rules for cost documents in MongoDB.
+ *
+ * @type {mongoose.Schema}
  */
 const costSchema = new mongoose.Schema({
     description: {
@@ -40,6 +43,8 @@ const costSchema = new mongoose.Schema({
 
 /**
  * Mongoose model for costs.
- * @type {import('mongoose').Model<Cost>}
+ * Provides an interface for creating, reading, updating, and deleting cost documents.
+ *
+ * @type {mongoose.Model<Cost>}
  */
 module.exports = mongoose.model('Cost', costSchema);
