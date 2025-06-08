@@ -215,7 +215,7 @@ router.get('/users/:id', async (req, res) => {
 router.get('/about', (req, res) => {
     const team = [
         { first_name: "Daniel", last_name: "Agranovsky" },
-        { first_name: "Nikole", last_name: "Melamed" }
+        { first_name: "Nikol", last_name: "Melamed" }
     ];
     res.json({
         message: 'Team Information Retrieved Successfully',
