@@ -5,7 +5,7 @@ const router = express.Router();
 router.get('/', function(req, res, next) {
   res.render('index',
       { title: 'Welcome To Our Server Side Cost Manager Project' ,
-      body: 'Made By The Greatest Students: Daniel And Nicole'});
+      body: 'Made By The Greatest Students: Daniel And Nikole'});
 });
 
 module.exports = router;
